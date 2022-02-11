@@ -19,6 +19,11 @@ export default {
     components: {
         Avatar,
     },
+    methods: {
+        onLogout() {
+            console.log('logout...');
+        },
+    },
 };
 </script>
 
