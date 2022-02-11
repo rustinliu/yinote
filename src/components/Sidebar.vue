@@ -1,5 +1,6 @@
 <template>
     <div id="sidebar">
+        <Avatar></Avatar>
         <div class="icons">
             <router-link to="/note/1" title="笔记" active-class="selected"><i class="iconfont icon-note"></i></router-link>
             <router-link to="/notebooks" title="笔记本" active-class="selected"><i class="iconfont icon-notebook"></i></router-link>
@@ -12,10 +13,16 @@
 </template>
 
 <script>
-export default {};
+import Avatar from '@/components/Avatar.vue';
+export default {
+    name: 'Sidebar',
+    components: {
+        Avatar,
+    },
+};
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 #sidebar {
     position: relative;
     width: 56px;
@@ -24,14 +31,15 @@ export default {};
 }
 .icons {
     margin-top: 15px;
-}
-.icons a {
-    padding: 6px 0;
-    display: block;
+    a {
+        padding: 6px 0;
+        display: block;
+    }
 }
 .selected {
     background-color: #5e6266;
 }
+
 .logout {
     position: absolute;
     bottom: 20px;
