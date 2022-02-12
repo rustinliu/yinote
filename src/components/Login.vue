@@ -9,7 +9,7 @@
 
                         <div :class="{ show: isShowRegister }" class="register">
                             <input type="text" v-model="register.username" placeholder="用户名" />
-                            <input type="password" v-model="register.password" placeholder="密码" />
+                            <input type="password" v-model="register.password" placeholder="密码" @keyup.enter="onRegister" />
                             <p :class="{ error: register.isError }">{{ register.notice }}</p>
                             <div class="button" @click="onRegister">创建账号</div>
                         </div>
@@ -17,7 +17,7 @@
 
                         <div :class="{ show: isShowLogin }" class="login">
                             <input type="text" v-model="login.username" placeholder="输入用户名" />
-                            <input type="password" v-model="login.password" placeholder="密码" />
+                            <input type="password" v-model="login.password" placeholder="密码" @keyup.enter="onLogin" />
                             <p :class="{ error: login.isError }">{{ login.notice }}</p>
                             <div class="button" @click="onLogin">登录</div>
                         </div>
@@ -78,10 +78,19 @@ export default {
             }
             this.register.isError = false;
             this.register.notice = '';
-            console.log(`start register..., username: ${this.register.username} , password: ${this.register.password}`);
-            Auth.register(this.register.username, this.register.password).then((data) => {
-                console.log(data);
-            });
+            Auth.register(this.register.username, this.register.password)
+                .then((data) => {
+                    this.register.isError = false;
+                    this.register.notice = '';
+                    this.$router.push({
+                        path: '/notebooks',
+                    });
+                })
+                .catch((data) => {
+                    console.log(data);
+                    this.register.isError = true;
+                    this.register.notice = data.msg;
+                });
         },
         onLogin() {
             if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.login.username)) {
@@ -97,10 +106,19 @@ export default {
             this.login.isError = false;
             this.login.notice = '';
 
-            console.log(`start login..., username: ${this.login.username} , password: ${this.login.password}`);
-            Auth.login(this.login.username, this.login.password).then((data) => {
-                console.log(data);
-            });
+            Auth.login(this.login.username, this.login.password)
+                .then((data) => {
+                    this.login.isError = false;
+                    this.login.notice = '';
+                    this.$router.push({
+                        path: '/notebooks',
+                    });
+                })
+                .catch((data) => {
+                    console.log(data);
+                    this.login.isError = true;
+                    this.login.notice = data.msg;
+                });
         },
     },
 };

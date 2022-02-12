@@ -13,7 +13,7 @@ export default function request(url, type = 'GET', data = {}) {
         let options = {
             url,
             method: type,
-            ValidityState(status) {
+            validateStatus(status) {
                 return (status >= 200 && status < 300) || status === 400;
             },
         };
@@ -25,7 +25,10 @@ export default function request(url, type = 'GET', data = {}) {
         axios(options)
             .then((res) => {
                 if (res.status === 200) resolve(res.data);
-                else reject(res.data);
+                else {
+                    console.log(res.data);
+                    reject(res.data);
+                }
             })
             .catch((err) => {
                 console.error({ msg: '网络错误' });
