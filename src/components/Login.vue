@@ -29,6 +29,7 @@
 </template>
 <script>
 import Auth from '@/apis/auth';
+import Bus from '@/helpers/bus';
 Auth.getInfo().then((data) => {
     console.log(data);
 });
@@ -82,6 +83,7 @@ export default {
                 .then((data) => {
                     this.register.isError = false;
                     this.register.notice = '';
+                    Bus.$emit('useInfo', { username: this.login.username });
                     this.$router.push({
                         path: '/notebooks',
                     });
