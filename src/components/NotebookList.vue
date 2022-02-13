@@ -1,8 +1,31 @@
 <template>
-    <div id="notebook-list">
-        <h1>{{ msg }}</h1>
-        <router-link to="/note/1">note1</router-link>
-        <router-link to="/note/2">note2</router-link>
+    <div class="detail" id="notebook-list">
+        <header>
+            <a href="#" class="btn"><i class="iconfont icon-plus"></i> 新建笔记本</a>
+        </header>
+        <main>
+            <div class="layout">
+                <h3>笔记本列表(10)</h3>
+                <div class="book-list">
+                    <a href="#" class="notebook">
+                        <div>
+                            <span class="iconfont icon-notebook"></span> 笔记本标题1 <span>3</span>
+                            <span class="action">编辑</span>
+                            <span class="action">删除</span>
+                            <span class="date">三天前</span>
+                        </div>
+                    </a>
+                    <a href="#" class="notebook">
+                        <div>
+                            <span class="iconfont icon-notebook"></span> 笔记本标题2 <span>3</span>
+                            <span class="action">编辑</span>
+                            <span class="action">删除</span>
+                            <span class="date">五天前</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </main>
     </div>
 </template>
 
@@ -27,8 +50,6 @@ export default {
 };
 </script>
 
-<style scoped>
-h1 {
-    color: red;
-}
+<style lang="less" scoped>
+@import '~@/assets/css/notebook-list.less';
 </style>
