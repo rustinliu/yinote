@@ -9,7 +9,7 @@ const URL = {
 
 export default {
     getAll() {
-        return requestAnimationFrame(URL.GET);
+        return request(URL.GET);
     },
     updateNotebook(notebookId, { title = '' } = { title: '' }) {
         return request(URL.UPDATE.replace(':id', notebookId), 'PATCH', { title });
