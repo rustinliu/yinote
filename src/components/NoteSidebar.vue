@@ -1,10 +1,16 @@
 <template>
     <div class="note-sidebar">
-        <span class="btn add-note">添加笔记</span>
+        <span class="btn add-note" @click="addNote">添加笔记</span>
         <el-dropdown class="notebook-title" @command="handleCommand" placement="bottom">
-            <span class="el-dropdown-link"> {{ curBook.title }} <i class="iconfont icon-down"></i> </span>
+            <span class="el-dropdown-link">
+                {{ curBook.title }} <i class="iconfont icon-down"></i>
+            </span>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id" :key="notebook.id">
+                <el-dropdown-item
+                    v-for="notebook in notebooks"
+                    :command="notebook.id"
+                    :key="notebook.id"
+                >
                     {{ notebook.title }}
                 </el-dropdown-item>
                 <el-dropdown-item command="trash">回收站</el-dropdown-item>
@@ -28,19 +34,27 @@
 <script>
 import Notebooks from '@/apis/notebooks';
 import Notes from '@/apis/notes';
+import Bus from '@/helpers/bus';
 
-window.Notes = Notes;
+//window.Notes = Notes;
 export default {
     created() {
         Notebooks.getAll()
             .then((res) => {
                 this.notebooks = res.data;
-                this.curBook = this.notebooks.find((notebook) => notebook.id.toString() === this.$route.query.notebookId) || this.notebooks[0] || {};
+                this.curBook =
+                    this.notebooks.find(
+                        (notebook) => notebook.id.toString() === this.$route.query.notebookId
+                    ) ||
+                    this.notebooks[0] ||
+                    {};
 
                 return Notes.getAll({ notebookId: this.curBook.id });
             })
             .then((res) => {
                 this.notes = res.data;
+                this.$emit('update:notes', this.notes);
+                Bus.$emit('update:notes', this.notes);
             });
     },
     data() {
@@ -56,9 +70,17 @@ export default {
                 return this.$router.push({ path: '/trash' });
             }
             this.curBook = this.notebooks.find((notebook) => notebook.id == notebookId);
-            if (this.curBook.id.toString() !== this.$route.query.notebookId) this.$router.push({ query: { notebookId } });
+            if (this.curBook.id.toString() !== this.$route.query.notebookId)
+                this.$router.push({ query: { notebookId } });
             Notes.getAll({ notebookId }).then((res) => {
                 this.notes = res.data;
+                this.$emit('update:notes', this.notes);
+            });
+        },
+        addNote() {
+            Notes.addNote({ notebookId: this.curBook.id }).then((res) => {
+                console.log(res.data);
+                this.notes.unshift(res.data);
             });
         },
     },

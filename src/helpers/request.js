@@ -35,7 +35,7 @@ export default function request(url, type = 'GET', data = {}) {
             })
             .catch((err) => {
                 console.error({ msg: '网络错误' });
-                Message.error(res.data.msg);
+                Message.error({ msg: '网络错误' });
                 reject({ msg: '网络错误' });
             });
     });
