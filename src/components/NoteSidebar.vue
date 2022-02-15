@@ -36,8 +36,7 @@ export default {
             .then((res) => {
                 this.notebooks = res.data;
                 this.curBook = this.notebooks.find((notebook) => notebook.id.toString() === this.$route.query.notebookId) || this.notebooks[0] || {};
-                //解决query未改动问题
-                this.$router.replace({ path: this.$route.path, query: { notebookId } });
+
                 return Notes.getAll({ notebookId: this.curBook.id });
             })
             .then((res) => {
@@ -57,7 +56,7 @@ export default {
                 return this.$router.push({ path: '/trash' });
             }
             this.curBook = this.notebooks.find((notebook) => notebook.id == notebookId);
-            this.$router.replace({ path: this.$route.path, query: { notebookId } });
+            if (this.curBook.id.toString() !== this.$route.query.notebookId) this.$router.push({ query: { notebookId } });
             Notes.getAll({ notebookId }).then((res) => {
                 this.notes = res.data;
             });
