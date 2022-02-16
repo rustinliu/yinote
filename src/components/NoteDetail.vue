@@ -3,13 +3,16 @@
         <NoteSidebar @update:notes="(val) => (notes = val)"></NoteSidebar>
         <div class="note-detail">
             <div class="note-empty" v-show="!curNote.id">请选择笔记</div>
-            <div v-show="curNote.id">
+            <div v-show="curNote.id" class="note-detail-ct">
                 <div class="note-bar">
                     <span> 创建日期: {{ curNote.createdAtFriendly }}</span>
                     <span> 更新日期:{{ curNote.updatedAtFriendly }}</span>
                     <span> {{ statusText }}</span>
                     <span class="iconfont icon-delete" @click="deleteNote"></span>
-                    <span class="iconfont icon-fullscreen"></span>
+                    <span
+                        class="iconfont icon-fullscreen"
+                        @click="isshowPreview = !isshowPreview"
+                    ></span>
                 </div>
                 <div class="note-title">
                     <input
@@ -20,15 +23,20 @@
                         @keydown="statusText = '正在输入。。。'"
                     />
                 </div>
-                <div class="editor"></div>
-                <textarea
-                    v-show="true"
-                    v-model="curNote.content"
-                    @input="updateNote"
-                    placeholder="输入内容, 支持 markdown 语法"
-                    @keydown="statusText = '正在输入。。。'"
-                ></textarea>
-                <div class="preview markdown-body" v-show="false"></div>
+                <div class="editor">
+                    <textarea
+                        v-show="!isshowPreview"
+                        v-model="curNote.content"
+                        @input="updateNote"
+                        placeholder="输入内容, 支持 markdown 语法"
+                        @keydown="statusText = '正在输入。。。'"
+                    ></textarea>
+                    <div
+                        class="preview markdown-body"
+                        v-html="previewContent"
+                        v-show="isshowPreview"
+                    ></div>
+                </div>
             </div>
         </div>
     </div>
@@ -40,6 +48,9 @@ import NoteSidebar from '@/components/NoteSidebar';
 import Bus from '@/helpers/bus';
 import _ from 'lodash';
 import Notes from '@/apis/notes';
+import markdownIt from 'markdown-it';
+const md = new markdownIt();
+
 export default {
     name: 'NoteDetail',
     components: {
@@ -50,6 +61,7 @@ export default {
             curNote: {},
             notes: [],
             statusText: '笔记未改动',
+            isshowPreview: false,
         };
     },
     methods: {
@@ -91,6 +103,11 @@ export default {
         console.log('beforeRouteUpdate');
         this.curNote = this.notes.find((note) => note.id == to.query.noteId) || {};
         next();
+    },
+    computed: {
+        previewContent() {
+            return md.render(this.curNote.content || '');
+        },
     },
 };
 </script>
