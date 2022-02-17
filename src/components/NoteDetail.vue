@@ -8,7 +8,7 @@
                     <span> 创建日期: {{ curNote.createdAtFriendly }}</span>
                     <span> 更新日期:{{ curNote.updatedAtFriendly }}</span>
                     <span> {{ statusText }}</span>
-                    <span class="iconfont icon-delete" @click="deleteNote"></span>
+                    <span class="iconfont icon-delete" @click="onDeleteNote"></span>
                     <span
                         class="iconfont icon-fullscreen"
                         @click="isshowPreview = !isshowPreview"
@@ -18,7 +18,7 @@
                     <input
                         type="text"
                         v-model="curNote.title"
-                        @input="updateNote"
+                        @input="onUpdateNote"
                         placeholder="输入标题"
                         @keydown="statusText = '正在输入。。。'"
                     />
@@ -27,7 +27,7 @@
                     <textarea
                         v-show="!isshowPreview"
                         v-model="curNote.content"
-                        @input="updateNote"
+                        @input="onUpdateNote"
                         placeholder="输入内容, 支持 markdown 语法"
                         @keydown="statusText = '正在输入。。。'"
                     ></textarea>
@@ -45,31 +45,34 @@
 <script>
 import Auth from '@/apis/auth';
 import NoteSidebar from '@/components/NoteSidebar';
-import Bus from '@/helpers/bus';
 import _ from 'lodash';
-import Notes from '@/apis/notes';
 import markdownIt from 'markdown-it';
 const md = new markdownIt();
+
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 export default {
     name: 'NoteDetail',
     components: {
         NoteSidebar,
     },
+
     data() {
         return {
-            curNote: {},
-            notes: [],
             statusText: '笔记未改动',
             isshowPreview: false,
         };
     },
+
     methods: {
-        updateNote: _.debounce(function() {
-            Notes.updateNote(
-                { noteId: this.curNote.id },
-                { title: this.curNote.title, content: this.curNote.content }
-            )
+        ...mapActions(['updateNote', 'deleteNote']),
+        ...mapMutations(['setCurNote']),
+        onUpdateNote: _.debounce(function() {
+            this.updateNote({
+                noteId: this.curNote.id,
+                title: this.curNote.title,
+                content: this.curNote.content,
+            })
                 .then((data) => {
                     this.statusText = '已保存';
                 })
@@ -77,11 +80,8 @@ export default {
                     this.statusText = '保存出错';
                 });
         }, 300),
-        deleteNote() {
-            console.log('1');
-            Notes.deleteNote({ noteId: this.curNote.id }).then((data) => {
-                this.$message.success(data.msg);
-                this.notes.splice(this.notes.indexOf(this.cuiNote), 1);
+        onDeleteNote() {
+            this.deleteNote({ noteId: this.curNote.id }).then((data) => {
                 this.$router.replace({ path: '/note' });
             });
         },
@@ -94,17 +94,14 @@ export default {
                 });
             }
         });
-        Bus.$once('update:notes', (val) => {
-            this.curNote = val.find((note) => note.id == this.$route.query.noteId) || {};
-        });
     },
 
     beforeRouteUpdate(to, from, next) {
-        console.log('beforeRouteUpdate');
-        this.curNote = this.notes.find((note) => note.id == to.query.noteId) || {};
+        this.setCurNote({ curNoteId: to.query.noteId });
         next();
     },
     computed: {
+        ...mapGetters(['notes', 'curNote']),
         previewContent() {
             return md.render(this.curNote.content || '');
         },
