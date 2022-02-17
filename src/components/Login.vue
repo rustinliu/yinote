@@ -9,7 +9,12 @@
 
                         <div :class="{ show: isShowRegister }" class="register">
                             <input type="text" v-model="register.username" placeholder="用户名" />
-                            <input type="password" v-model="register.password" placeholder="密码" @keyup.enter="onRegister" />
+                            <input
+                                type="password"
+                                v-model="register.password"
+                                placeholder="密码"
+                                @keyup.enter="onRegister"
+                            />
                             <p :class="{ error: register.isError }">{{ register.notice }}</p>
                             <div class="button" @click="onRegister">创建账号</div>
                         </div>
@@ -17,7 +22,12 @@
 
                         <div :class="{ show: isShowLogin }" class="login">
                             <input type="text" v-model="login.username" placeholder="输入用户名" />
-                            <input type="password" v-model="login.password" placeholder="密码" @keyup.enter="onLogin" />
+                            <input
+                                type="password"
+                                v-model="login.password"
+                                placeholder="密码"
+                                @keyup.enter="onLogin"
+                            />
                             <p :class="{ error: login.isError }">{{ login.notice }}</p>
                             <div class="button" @click="onLogin">登录</div>
                         </div>
@@ -30,6 +40,7 @@
 <script>
 import Auth from '@/apis/auth';
 import Bus from '@/helpers/bus';
+import { mapActions, mapGetters } from 'vuex';
 Auth.getInfo().then((data) => {
     console.log(data);
 });
@@ -58,6 +69,10 @@ export default {
         };
     },
     methods: {
+        ...mapActions({
+            loginUser: 'login',
+            registerUser: 'register',
+        }),
         showLogin() {
             this.isShowLogin = true;
             this.isShowRegister = false;
@@ -79,11 +94,13 @@ export default {
             }
             this.register.isError = false;
             this.register.notice = '';
-            Auth.register(this.register.username, this.register.password)
-                .then((data) => {
+            this.registerUser({
+                username: this.register.username,
+                password: this.register.password,
+            })
+                .then(() => {
                     this.register.isError = false;
                     this.register.notice = '';
-                    Bus.$emit('useInfo', { username: this.login.username });
                     this.$router.push({
                         path: '/notebooks',
                     });
@@ -108,8 +125,8 @@ export default {
             this.login.isError = false;
             this.login.notice = '';
 
-            Auth.login(this.login.username, this.login.password)
-                .then((data) => {
+            this.loginUser({ username: this.login.username, password: this.login.password })
+                .then(() => {
                     this.login.isError = false;
                     this.login.notice = '';
                     this.$router.push({
@@ -153,7 +170,8 @@ export default {
 
     .main {
         flex: 1;
-        background: #36bc64 url(//cloud.hunger-valley.com/17-12-13/38476998.jpg-middle) center center no-repeat;
+        background: #36bc64 url(//cloud.hunger-valley.com/17-12-13/38476998.jpg-middle) center
+            center no-repeat;
         background-size: contain;
     }
     .form {

@@ -7,10 +7,10 @@ const URL = {
     GET_INFO: '/auth',
 };
 export default {
-    register(username, password) {
+    register({ username, password }) {
         return requset(URL.REGISTER, 'POST', { username, password });
     },
-    login(username, password) {
+    login({ username, password }) {
         return requset(URL.LOGIN, 'POST', { username, password });
     },
     logout() {

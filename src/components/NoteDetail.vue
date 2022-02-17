@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import Auth from '@/apis/auth';
 import NoteSidebar from '@/components/NoteSidebar';
 import _ from 'lodash';
 import markdownIt from 'markdown-it';
@@ -65,7 +64,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['updateNote', 'deleteNote']),
+        ...mapActions(['updateNote', 'deleteNote', 'checkLogin']),
         ...mapMutations(['setCurNote']),
         onUpdateNote: _.debounce(function() {
             this.updateNote({
@@ -87,13 +86,7 @@ export default {
         },
     },
     created() {
-        Auth.getInfo().then((res) => {
-            if (!res.isLogin) {
-                this.$router.push({
-                    path: '/login',
-                });
-            }
-        });
+        this.checkLogin('/login');
     },
 
     beforeRouteUpdate(to, from, next) {

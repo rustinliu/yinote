@@ -36,7 +36,6 @@ import Notebooks from '@/apis/notebooks';
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
 //window.Notebooks = Notebooks;
 
-import Auth from '@/apis/auth';
 import { friendlyDate } from '@/helpers/util';
 export default {
     name: 'NotebookList',
@@ -47,18 +46,17 @@ export default {
         ...mapGetters(['notebooks']),
     },
     created() {
-        Auth.getInfo().then((res) => {
-            if (!res.isLogin) {
-                this.$router.push({
-                    path: '/login',
-                });
-            }
-        });
-
+        this.checkLogin({ path: '/login' });
         this.getNotebooks();
     },
     methods: {
-        ...mapActions(['addNotebook', 'updateNotebook', 'deleteNotebook', 'getNotebooks']),
+        ...mapActions([
+            'addNotebook',
+            'updateNotebook',
+            'deleteNotebook',
+            'getNotebooks',
+            'checkLogin',
+        ]),
 
         onCreate() {
             this.$prompt('请输入新笔记标题', '创建笔记本', {
