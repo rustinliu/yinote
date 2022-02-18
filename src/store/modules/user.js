@@ -23,7 +23,10 @@ const actions = {
             commit('setUser', { user: res.data });
         });
     },
-    checkLogin({ commit }, payload) {
+    checkLogin({ commit, state }, payload) {
+        if (state.user) {
+            return Promise.resolve(state.user);
+        }
         return Auth.getInfo().then((res) => {
             if (res.isLogin) {
                 commit('setUser', { user: res.data });

@@ -33,7 +33,8 @@ const mutations = {
     },
 };
 const actions = {
-    getNotebooks({ commit }) {
+    getNotebooks({ commit, state }) {
+        if (state.notebooks !== null) return Promise.resolve(state.notebooks);
         return Notebook.getAll().then((res) => {
             commit('setNotebooks', { notebooks: res.data });
         });
