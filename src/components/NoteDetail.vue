@@ -10,8 +10,9 @@
                     <span> {{ statusText }}</span>
                     <span class="iconfont icon-delete" @click="onDeleteNote"></span>
                     <span
-                        class="iconfont icon-fullscreen"
-                        @click="isshowPreview = !isshowPreview"
+                        class="iconfont"
+                        :class="isShowPreview ? 'icon-edit' : 'icon-eye'"
+                        @click="isShowPreview = !isShowPreview"
                     ></span>
                 </div>
                 <div class="note-title">
@@ -24,17 +25,25 @@
                     />
                 </div>
                 <div class="editor">
-                    <textarea
+                    <codemirror
+                        v-model="curNote.content"
+                        :options="cmOptions"
+                        v-show="!isShowPreview"
+                        @input="onUpdateNote"
+                        @inputRead="statusText = '正在输入...'"
+                    ></codemirror>
+
+                    <!-- <textarea
                         v-show="!isshowPreview"
                         v-model="curNote.content"
                         @input="onUpdateNote"
                         placeholder="输入内容, 支持 markdown 语法"
                         @keydown="statusText = '正在输入。。。'"
-                    ></textarea>
+                    ></textarea> -->
                     <div
                         class="preview markdown-body"
                         v-html="previewContent"
-                        v-show="isshowPreview"
+                        v-show="isShowPreview"
                     ></div>
                 </div>
             </div>
@@ -47,6 +56,10 @@ import NoteSidebar from '@/components/NoteSidebar';
 import _ from 'lodash';
 import markdownIt from 'markdown-it';
 const md = new markdownIt();
+import { codemirror } from 'vue-codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/mode/markdown/markdown.js';
+import 'codemirror/theme/neat.css';
 
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
@@ -54,12 +67,21 @@ export default {
     name: 'NoteDetail',
     components: {
         NoteSidebar,
+        codemirror,
     },
 
     data() {
         return {
+            isShowPreview: false,
             statusText: '笔记未改动',
-            isshowPreview: false,
+            cmOptions: {
+                tabSize: 4,
+                mode: 'text/x-markdown',
+                theme: 'neat',
+                lineNumbers: false,
+                line: true,
+                // more codemirror options, 更多 codemirror 的高级配置...
+            },
         };
     },
 
@@ -67,6 +89,9 @@ export default {
         ...mapActions(['updateNote', 'deleteNote', 'checkLogin']),
         ...mapMutations(['setCurNote']),
         onUpdateNote: _.debounce(function() {
+            if (!this.curNote.id) {
+                return;
+            }
             this.updateNote({
                 noteId: this.curNote.id,
                 title: this.curNote.title,
@@ -81,7 +106,9 @@ export default {
         }, 300),
         onDeleteNote() {
             this.deleteNote({ noteId: this.curNote.id }).then((data) => {
-                this.$router.replace({ path: '/note' });
+                this.$router.replace({
+                    path: '/note',
+                });
             });
         },
     },
@@ -94,7 +121,7 @@ export default {
         next();
     },
     computed: {
-        ...mapGetters(['notes', 'curNote']),
+        ...mapGetters(['notes', 'curNote', 'curBook']),
         previewContent() {
             return md.render(this.curNote.content || '');
         },

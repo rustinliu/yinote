@@ -2,9 +2,15 @@
     <div id="sidebar">
         <Avatar></Avatar>
         <div class="icons">
-            <router-link to="/note/" title="笔记" active-class="selected"><i class="iconfont icon-note"></i></router-link>
-            <router-link to="/notebooks" title="笔记本" active-class="selected"><i class="iconfont icon-notebook"></i></router-link>
-            <router-link to="/trash/" title="回收站" active-class="selected"><i class="iconfont icon-trash"></i></router-link>
+            <router-link to="/note/" title="笔记" active-class="selected"
+                ><i class="iconfont icon-note"></i
+            ></router-link>
+            <router-link to="/notebooks" title="笔记本" active-class="selected"
+                ><i class="iconfont icon-notebook"></i
+            ></router-link>
+            <router-link to="/trash/" title="回收站" active-class="selected"
+                ><i class="iconfont icon-trash"></i
+            ></router-link>
         </div>
         <div class="logout" @click="onLogout">
             <i class="iconfont icon-logout"></i>
@@ -14,21 +20,16 @@
 
 <script>
 import Avatar from '@/components/Avatar.vue';
-import Auth from '@/apis/auth';
+import { mapActions } from 'vuex';
 export default {
     name: 'Sidebar',
     components: {
         Avatar,
     },
     methods: {
+        ...mapActions(['logout']),
         onLogout() {
-            console.log('logout');
-            Auth.logout().then((data) => {
-                this.$router.push({
-                    path: '/login',
-                });
-                console.log(data);
-            });
+            this.logout({ path: '/login' });
         },
     },
 };

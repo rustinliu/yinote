@@ -47,13 +47,22 @@ export default {
             })
             .then(() => {
                 this.setCurNote({ curNoteId: this.$route.query.noteId });
+                if (!this.$route.query.notebookId) {
+                    this.$router.replace({
+                        path: '/note',
+                        query: {
+                            noteId: this.curNote.id,
+                            notebookId: this.curBook.id,
+                        },
+                    });
+                }
             });
     },
     data() {
         return {};
     },
     computed: {
-        ...mapGetters(['notebooks', 'notes', 'curBook', 'curBookId']),
+        ...mapGetters(['notebooks', 'notes', 'curBook', 'curBookId', 'curNote']),
     },
     methods: {
         ...mapActions(['getNotebooks', 'getNotes', 'addNote']),
@@ -64,7 +73,18 @@ export default {
             }
 
             this.setCurBook({ notebookId: notebookId });
-            this.getNotes({ notebookId });
+            this.getNotes({ notebookId }).then(() => {
+                this.setCurNote({});
+                if (!this.$route.query.notebookId) {
+                    this.$router.replace({
+                        path: '/note',
+                        query: {
+                            noteId: this.curNote.id,
+                            notebookId: this.curBook.id,
+                        },
+                    });
+                }
+            });
         },
         onAddNote() {
             this.addNote({ notebookId: this.curBook.id });
