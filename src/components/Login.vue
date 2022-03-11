@@ -39,15 +39,11 @@
 </template>
 <script>
 import Auth from '@/apis/auth';
-import Bus from '@/helpers/bus';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 Auth.getInfo().then((data) => {
     console.log(data);
 });
 
-// request('/auth').then((data) => {
-//     console.log(data);
-// });
 export default {
     name: 'Login',
     data() {

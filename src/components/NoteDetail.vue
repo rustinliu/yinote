@@ -112,9 +112,6 @@ export default {
             });
         },
     },
-    created() {
-        this.checkLogin('/login');
-    },
 
     beforeRouteUpdate(to, from, next) {
         this.setCurNote({ curNoteId: to.query.noteId });

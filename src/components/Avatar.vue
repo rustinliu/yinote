@@ -3,8 +3,6 @@
 </template>
 
 <script>
-import Auth from '@/apis/auth';
-
 import { mapActions, mapGetters } from 'vuex';
 export default {
     name: 'Avatar',

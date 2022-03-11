@@ -32,11 +32,9 @@
 </template>
 
 <script>
-import Notebooks from '@/apis/notebooks';
-import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 //window.Notebooks = Notebooks;
 
-import { friendlyDate } from '@/helpers/util';
 export default {
     name: 'NotebookList',
     data() {
@@ -46,7 +44,6 @@ export default {
         ...mapGetters(['notebooks']),
     },
     created() {
-        this.checkLogin({ path: '/login' });
         this.getNotebooks();
     },
     methods: {

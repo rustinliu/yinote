@@ -45,7 +45,6 @@ export default {
     name: 'TrashDetail',
 
     created() {
-        this.checkLogin({ path: '/login' });
         this.getNotebooks();
         this.getTrashNotes().then(() => {
             this.setCurTrashNote({ curTrashNoteId: this.$route.query.noteId });
