@@ -29,7 +29,13 @@ export default {
     methods: {
         ...mapActions(['logout']),
         onLogout() {
-            this.logout({ path: '/login' });
+            this.$confirm('确定要退出吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }).then(() => {
+                this.logout({ path: '/login' });
+            });
         },
     },
 };

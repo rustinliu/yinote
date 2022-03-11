@@ -40,16 +40,15 @@
 <script>
 import Auth from '@/apis/auth';
 import { mapActions } from 'vuex';
-Auth.getInfo().then((data) => {
-    console.log(data);
-});
+
+Auth.getInfo().then((data) => {});
 
 export default {
     name: 'Login',
     data() {
         return {
-            isShowRegister: false,
-            isShowLogin: true,
+            isShowRegister: true,
+            isShowLogin: false,
             register: {
                 username: '',
                 password: '',
@@ -88,24 +87,27 @@ export default {
                 this.register.notice = '密码长度为6~16个字符';
                 return;
             }
-            this.register.isError = false;
-            this.register.notice = '';
-            this.registerUser({
-                username: this.register.username,
-                password: this.register.password,
-            })
-                .then(() => {
-                    this.register.isError = false;
-                    this.register.notice = '';
-                    this.$router.push({
-                        path: '/notebooks',
-                    });
+            const loadingInstance = this.$loading({ background: 'rgba(255,255,255,.65)' });
+            setTimeout(() => {
+                loadingInstance.close();
+                this.register.isError = false;
+                this.register.notice = '';
+                this.registerUser({
+                    username: this.register.username,
+                    password: this.register.password,
                 })
-                .catch((data) => {
-                    console.log(data);
-                    this.register.isError = true;
-                    this.register.notice = data.msg;
-                });
+                    .then(() => {
+                        this.register.isError = false;
+                        this.register.notice = '';
+                        this.$router.push({
+                            path: '/notebooks',
+                        });
+                    })
+                    .catch((data) => {
+                        this.register.isError = true;
+                        this.register.notice = data.msg;
+                    });
+            }, 500);
         },
         onLogin() {
             if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.login.username)) {
@@ -118,22 +120,25 @@ export default {
                 this.login.notice = '密码长度为6~16个字符';
                 return;
             }
-            this.login.isError = false;
-            this.login.notice = '';
+            const loadingInstance = this.$loading({ background: 'rgba(255,255,255,.65)' });
+            setTimeout(() => {
+                loadingInstance.close();
+                this.login.isError = false;
+                this.login.notice = '';
 
-            this.loginUser({ username: this.login.username, password: this.login.password })
-                .then(() => {
-                    this.login.isError = false;
-                    this.login.notice = '';
-                    this.$router.push({
-                        path: '/notebooks',
+                this.loginUser({ username: this.login.username, password: this.login.password })
+                    .then(() => {
+                        this.login.isError = false;
+                        this.login.notice = '';
+                        this.$router.push({
+                            path: '/notebooks',
+                        });
+                    })
+                    .catch((data) => {
+                        this.login.isError = true;
+                        this.login.notice = data.msg;
                     });
-                })
-                .catch((data) => {
-                    console.log(data);
-                    this.login.isError = true;
-                    this.login.notice = data.msg;
-                });
+            }, 500);
         },
     },
 };
@@ -146,7 +151,8 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;

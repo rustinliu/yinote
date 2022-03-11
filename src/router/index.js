@@ -4,6 +4,12 @@ import store from '@/store';
 
 Vue.use(Router);
 
+//解决 Cannot read properties of undefined (reading '_normalized')的问题
+const routerPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
+    return routerPush.call(this, location).catch((error) => error);
+};
+
 const router = new Router({
     routes: [
         {
@@ -38,4 +44,5 @@ router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth) store.dispatch('checkLogin', '/login');
     next();
 });
+
 export default router;
