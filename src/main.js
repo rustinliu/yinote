@@ -5,12 +5,20 @@ import App from './App';
 import router from './router';
 import store from './store';
 
-import ElementUI from 'element-ui';
+import { Message, MessageBox, Dropdown, DropdownMenu, DropdownItem, Loading } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.config.productionTip = false;
 
-Vue.use(ElementUI);
+Vue.component('Message', Message);
+Vue.component('MessageBox', MessageBox);
+Vue.use(Dropdown);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
+Vue.use(Loading);
+Vue.prototype.$message = Message;
+Vue.prototype.$prompt = MessageBox.prompt;
+Vue.prototype.$confirm = MessageBox.confirm;
 
 /* eslint-disable no-new */
 new Vue({

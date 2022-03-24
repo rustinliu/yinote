@@ -44,9 +44,9 @@ export default {
 <style lang="less" scoped>
 #sidebar {
     position: relative;
-    width: 56px;
+    width: 66px;
     text-align: center;
-    background-color: #2c333c;
+    background-color: #415e6d;
 }
 .icons {
     margin-top: 15px;
@@ -56,7 +56,7 @@ export default {
     }
 }
 .selected {
-    background-color: #5e6266;
+    background-color: darken(#415e6d, 10%);
 }
 
 .logout {
@@ -69,5 +69,6 @@ export default {
 
 .iconfont {
     color: #fff;
+    font-size: 26px;
 }
 </style>

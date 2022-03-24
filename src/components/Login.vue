@@ -160,25 +160,24 @@ export default {
 }
 
 .modal-container {
-    width: 800px;
-    height: 500px;
+    // width: 400px;
+    // height: 500px;
     margin: 0px auto;
     background-color: #fff;
-    border-radius: 2px;
+    border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
     transition: all 0.3s ease;
     font-family: Helvetica, Arial, sans-serif;
     display: flex;
-
+    flex-direction: column;
     .main {
-        flex: 1;
-        background: #36bc64 url(//cloud.hunger-valley.com/17-12-13/38476998.jpg-middle) center
-            center no-repeat;
+        width: 300px;
+        height: 150px;
+        background: url('~@/assets/pic.png') center center no-repeat;
         background-size: contain;
     }
     .form {
-        width: 270px;
-        border-left: 1px solid #ccc;
+        width: 300px;
         overflow: hidden;
         h3 {
             padding: 10px 20px;
@@ -193,7 +192,7 @@ export default {
         }
 
         .button {
-            background-color: #2bb964;
+            background-color: #415e6d;
             height: 36px;
             line-height: 36px;
             text-align: center;
